@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rejigs", "Rejigs\Rejigs.csproj", "{ACAF59C3-0966-421D-819A-E91B5730D46F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rejigs.Tests", "Rejigs.Tests\Rejigs.Tests.csproj", "{D3F552A9-A140-454E-9161-89FB2A862965}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACAF59C3-0966-421D-819A-E91B5730D46F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACAF59C3-0966-421D-819A-E91B5730D46F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACAF59C3-0966-421D-819A-E91B5730D46F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACAF59C3-0966-421D-819A-E91B5730D46F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F552A9-A140-454E-9161-89FB2A862965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F552A9-A140-454E-9161-89FB2A862965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F552A9-A140-454E-9161-89FB2A862965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F552A9-A140-454E-9161-89FB2A862965}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
