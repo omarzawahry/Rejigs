@@ -12,6 +12,12 @@ public class Rejigs
     // Basic pattern builders
     public Rejigs Text(string text) => Append(Regex.Escape(text));
     public Rejigs Pattern(string rawPattern) => Append(rawPattern);
+    
+    // Anchors
+    public Rejigs AtStart() => Append("^");
+    public Rejigs AtEnd() => Append("$");
+    public Rejigs AtWordBoundary() => Append(@"\b");
+    public Rejigs NotAtWordBoundary() => Append(@"\B");
 
     // Character classes
     public Rejigs AnyDigit() => Append(@"\d");
@@ -58,12 +64,7 @@ public class Rejigs
     public Rejigs Optional(string text) => Text(text).Optional();
 
     public Rejigs Optional(Func<Rejigs, Rejigs> pattern) => Group(pattern).Optional();
-
-    // Anchors
-    public Rejigs AtStart() => Append("^");
-    public Rejigs AtEnd() => Append("$");
-    public Rejigs AtWordBoundary() => Append(@"\b");
-    public Rejigs NotAtWordBoundary() => Append(@"\B");
+    
 
     // Alternation
     public Rejigs Or() => Append("|");
