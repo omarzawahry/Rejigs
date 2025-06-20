@@ -25,6 +25,47 @@ namespace Rejigs.Tests
 
         #endregion
 
+        #region Pattern Tests
+
+        [Test]
+        public void Pattern_AddsRawRegexPattern()
+        {
+            var regex = Rejigs.Create().Pattern(@"\d{3}").Build();
+            Assert.That("123", Does.Match(regex));
+            Assert.That("12", Does.Not.Match(regex));
+            Assert.That("abc", Does.Not.Match(regex));
+        }
+
+        [Test]
+        public void Pattern_CombinesWithOtherMethods()
+        {
+            var regex = Rejigs.Create()
+                .Text("prefix-")
+                .Pattern(@"\d+")
+                .Text("-suffix")
+                .Build();
+
+            Assert.That("prefix-123-suffix", Does.Match(regex));
+            Assert.That("prefix--suffix", Does.Not.Match(regex));
+            Assert.That("prefix-abc-suffix", Does.Not.Match(regex));
+        }
+
+        [Test]
+        public void Pattern_PreservesSpecialRegexCharacters()
+        {
+            var regex = Rejigs.Create()
+                .AtStart()
+                .Pattern(@"\b\w+\b")
+                .AtEnd()
+                .Build();
+
+            Assert.That("word", Does.Match(regex));
+            Assert.That("two words", Does.Not.Match(regex));
+            Assert.That("word!", Does.Not.Match(regex));
+        }
+
+        #endregion
+
         #region Character Class Tests
 
         [Test]
@@ -119,6 +160,38 @@ namespace Rejigs.Tests
         #endregion
 
         #region Quantifier Tests
+
+        [Test]
+        public void ZeroOrMore_WithText_MatchesOptionalRepeatedText()
+        {
+            var regex = Rejigs.Create()
+                .Text("pre")
+                .ZeroOrMore(r => r.Text("-"))
+                .Text("fix")
+                .Build();
+
+            Assert.That("prefix", Does.Match(regex));
+            Assert.That("pre-fix", Does.Match(regex));
+            Assert.That("pre--fix", Does.Match(regex));
+        }
+
+        [Test]
+        public void ZeroOrMore_CombinedWithOtherPatterns()
+        {
+            var regex = Rejigs.Create()
+                .AtStart()
+                .Text("A")
+                .ZeroOrMore(r => r.AnyDigit())
+                .Text("Z")
+                .AtEnd()
+                .Build();
+
+            Assert.That("AZ", Does.Match(regex));
+            Assert.That("A1Z", Does.Match(regex));
+            Assert.That("A123Z", Does.Match(regex));
+            Assert.That("A1B2Z", Does.Not.Match(regex));
+            Assert.That("ABC", Does.Not.Match(regex));
+        }
 
         [Test]
         public void OneOrMore_MatchesRepeatedPattern()

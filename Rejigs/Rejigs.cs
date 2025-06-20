@@ -9,17 +9,14 @@ public class Rejigs
 
     public static Rejigs Create() => new();
 
-    // Basic pattern builders
     public Rejigs Text(string text) => Append(Regex.Escape(text));
     public Rejigs Pattern(string rawPattern) => Append(rawPattern);
     
-    // Anchors
     public Rejigs AtStart() => Append("^");
     public Rejigs AtEnd() => Append("$");
     public Rejigs AtWordBoundary() => Append(@"\b");
     public Rejigs NotAtWordBoundary() => Append(@"\B");
 
-    // Character classes
     public Rejigs AnyDigit() => Append(@"\d");
     public Rejigs AnyNonDigit() => Append(@"\D");
     public Rejigs AnyLetterOrDigit() => Append(@"\w");
@@ -31,7 +28,6 @@ public class Rejigs
     public Rejigs AnyInRange(char from, char to) => Append($"[{from}-{to}]");
     public Rejigs AnyExcept(string characters) => Append($"[^{Regex.Escape(characters)}]");
 
-    // Quantifiers
     private Rejigs ZeroOrMore() => Append("*");
     private Rejigs OneOrMore() => Append("+");
     private Rejigs Optional() => Append("?");
@@ -39,7 +35,6 @@ public class Rejigs
     public Rejigs AtLeast(int count) => Append($"{{{count},}}");
     public Rejigs Between(int min, int max) => Append($"{{{min},{max}}}");
 
-    // Group operations
     private Rejigs Group(Func<Rejigs, Rejigs> pattern)
     {
         Append("(");
@@ -54,7 +49,6 @@ public class Rejigs
         return Append(")");
     }
 
-    // Composites
     public Rejigs ZeroOrMore(Func<Rejigs, Rejigs> pattern) =>
         Group(pattern).ZeroOrMore();
 
@@ -66,7 +60,6 @@ public class Rejigs
     public Rejigs Optional(Func<Rejigs, Rejigs> pattern) => Group(pattern).Optional();
     
 
-    // Alternation
     public Rejigs Or() => Append("|");
 
     public Rejigs Either(params Func<Rejigs, Rejigs>[] patterns)
@@ -86,12 +79,10 @@ public class Rejigs
         return Append(")");
     }
 
-    // Output
     public string Expression => _pattern.ToString();
     public Regex Build() => new(Expression);
     public Regex Build(RegexOptions options) => new(Expression, options);
 
-    // Helper
     private Rejigs Append(string value)
     {
         _pattern.Append(value);
