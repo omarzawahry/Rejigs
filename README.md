@@ -14,6 +14,7 @@ var regex = Rejigs.Create()
                   .Build();
 
 Console.WriteLine(regex.IsMatch("cats")); // True
+Console.WriteLine(regex.IsMatch("cat")); // True
 
 
 var emailRegex = Rejigs.Create()
@@ -22,7 +23,7 @@ var emailRegex = Rejigs.Create()
                        .Text("@")
                        .OneOrMore(r => r.Word())                          // domain
                        .Text(".")
-                       .OneOrMore(r => r.Word())                          // TLD
+                       .OneOrMore(r => r.Word())                          // top level domain
                        .AtEnd()
                        .Build();
 
