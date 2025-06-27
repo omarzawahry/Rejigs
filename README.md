@@ -1,6 +1,6 @@
 # Rejigs
 
-🧩 A LINQ-style fluent builder for regular expressions in C#.
+🧩 A fluent builder for regular expressions in C#.
 
 
 ## Example
