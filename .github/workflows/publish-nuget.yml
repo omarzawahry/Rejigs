@@ -48,8 +48,8 @@ jobs:
         PACKAGE_VERSION: ${{ steps.get_version.outputs.version }}
 
     - name: Get current version
-        id: get_version
-        run: echo "version=$(grep -oP '<Version>\K[^<]+' Rejigs/Rejigs.csproj)" >> $GITHUB_OUTPUT
+      id: get_version
+      run: echo "version=$(grep -oP '<Version>\K[^<]+' Rejigs/Rejigs.csproj)" >> $GITHUB_OUTPUT
 
     - name: Increment version
       id: increment_version
