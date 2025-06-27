@@ -5,66 +5,69 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  publish-nuget:
+  build-and-publish:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
     
+    permissions:
+      contents: write
+      packages: write
+    
+    steps:
+    # 1. Checkout code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    # 2. Setup .NET environment
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.0.x'
-        
+        dotnet-version: 9.0.x
+    
+    # 3. Restore dependencies
     - name: Restore dependencies
       run: dotnet restore
-      
+    
+    # 4. Build project
     - name: Build
       run: dotnet build --configuration Release --no-restore
-      
+    
+    # 5. Run tests
     - name: Test
-      run: dotnet test --configuration Release --no-build
-      
+      run: dotnet test --no-restore --verbosity normal
+    
+    # 6. Extract version from csproj
+    - name: Get version from csproj
+      id: get_version
+      run: |
+        VERSION=$(grep -oP '<Version>\K[^<]+' Rejigs/Rejigs.csproj)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+    
+    # 7. Create packages/artifacts
     - name: Pack
-      run: dotnet pack --configuration Release --no-build --output ./nupkgs
-      
-    - name: Push to NuGet
-      run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-
-    - name: Create Release
+      run: dotnet pack --no-build --configuration Release --output ./artifacts
+    
+    # 8. Create GitHub release
+    - name: Create release
       uses: softprops/action-gh-release@v1
-      if: success()
       with:
-        tag_name: v${{ env.PACKAGE_VERSION }}
-        name: Release v${{ env.PACKAGE_VERSION }}
-        draft: false
-        prerelease: false
+        tag_name: v${{ steps.get_version.outputs.version }}
+        name: Release v${{ steps.get_version.outputs.version }}
         generate_release_notes: true
+        files: ./artifacts/*.nupkg
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PACKAGE_VERSION: ${{ steps.get_version.outputs.version }}
-
-    - name: Get current version
-      id: get_version
-      run: echo "version=$(grep -oP '<Version>\K[^<]+' Rejigs/Rejigs.csproj)" >> $GITHUB_OUTPUT
-
-    - name: Increment version
-      id: increment_version
+    
+    # 9. Publish to NuGet.org
+    - name: Publish to NuGet.org
+      run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      if: success()
+    
+    # 10. Publish to GitHub Packages
+    - name: Setup NuGet for GitHub Packages
       run: |
-        IFS='.' read -ra VERSION_PARTS <<< "${{ steps.get_version.outputs.version }}"
-        PATCH=$((VERSION_PARTS[2] + 1))
-        NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH"
-        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-    - name: Update version in csproj
-      run: |
-        sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.increment_version.outputs.new_version }}<\/Version>/" Rejigs/Rejigs.csproj
-        
-    - name: Commit version update
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Bump version to ${{ steps.increment_version.outputs.new_version }}"
-        file_pattern: "Rejigs/Rejigs.csproj"
+        dotnet nuget add source --username omarzawahry --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/omarzawahry/index.json"
+    
+    - name: Publish to GitHub Packages
+      run: dotnet nuget push "./artifacts/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+      if: success()
