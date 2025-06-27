@@ -24,7 +24,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="MinVer" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Version="1.0.0" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>
