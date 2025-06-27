@@ -34,6 +34,10 @@ jobs:
     - name: Push to NuGet
       run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
+    - name: Publish to GitHub Packages
+      run: dotnet nuget push "./artifacts/*.nupkg" --source https://nuget.pkg.github.com/omarzawahry/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      if: success()
+
     - name: Create Release
       uses: softprops/action-gh-release@v1
       if: success()

@@ -13,7 +13,7 @@
         <PackageTags>regex;regular-expressions;fluent</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/omarzawahry/Rejigs</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/omarzawahry/Rejigs.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/omarzawahry/Rejigs</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
