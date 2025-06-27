@@ -30,3 +30,16 @@ jobs:
       
     - name: Push to NuGet
       run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      if: success()
+      with:
+        tag_name: v${{ env.PACKAGE_VERSION }}
+        name: Release v${{ env.PACKAGE_VERSION }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PACKAGE_VERSION: ${{ steps.get_version.outputs.version }}
