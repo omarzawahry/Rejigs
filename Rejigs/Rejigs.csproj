@@ -5,5 +5,23 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>Rejigs</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>omarzawahry</Authors>
+        <Description>A fluent interface for building regular expressions</Description>
+        <PackageTags>regex;regular-expressions;fluent</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/omarzawahry/Rejigs</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/omarzawahry/Rejigs.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
 </Project>
