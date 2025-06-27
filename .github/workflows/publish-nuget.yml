@@ -46,3 +46,25 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PACKAGE_VERSION: ${{ steps.get_version.outputs.version }}
+
+    - name: Get current version
+        id: get_version
+        run: echo "version=$(grep -oP '<Version>\K[^<]+' Rejigs/Rejigs.csproj)" >> $GITHUB_OUTPUT
+
+    - name: Increment version
+      id: increment_version
+      run: |
+        IFS='.' read -ra VERSION_PARTS <<< "${{ steps.get_version.outputs.version }}"
+        PATCH=$((VERSION_PARTS[2] + 1))
+        NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$PATCH"
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Update version in csproj
+      run: |
+        sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.increment_version.outputs.new_version }}<\/Version>/" Rejigs/Rejigs.csproj
+        
+    - name: Commit version update
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Bump version to ${{ steps.increment_version.outputs.new_version }}"
+        file_pattern: "Rejigs/Rejigs.csproj"
