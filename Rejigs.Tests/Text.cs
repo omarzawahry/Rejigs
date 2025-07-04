@@ -21,13 +21,13 @@ public class Text
     }
 
     [Test]
-    public void Text_EmptyString_MatchesAnything()
+    public void Text_EmptyString_MatchesOnlyEmptyString()
     {
         var regex = Rejigs.Create().Text("").Build();
         Assert.That("", Does.Match(regex));
-        Assert.That("a", Does.Match(regex));
-        Assert.That("b", Does.Match(regex));
-        Assert.That("     ", Does.Match(regex));
+        Assert.That("a", Does.Not.Match(regex));
+        Assert.That("b", Does.Not.Match(regex));
+        Assert.That("     ", Does.Not.Match(regex));
     }
 
     [Test]
