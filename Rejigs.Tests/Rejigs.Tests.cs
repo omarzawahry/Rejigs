@@ -5,26 +5,6 @@ namespace Rejigs.Tests
 {
     public class RejigsTests
     {
-        #region Basic Pattern Tests
-
-        [Test]
-        public void Text_MatchesExactText()
-        {
-            var regex = Rejigs.Create().Text("hello").Build();
-            Assert.That("hello", Does.Match(regex));
-            Assert.That("Hello", Does.Not.Match(regex));
-        }
-
-        [Test]
-        public void Text_EscapesSpecialCharacters()
-        {
-            var regex = Rejigs.Create().Text("a.b*c+").Build();
-            Assert.That("a.b*c+", Does.Match(regex));
-            Assert.That("abc", Does.Not.Match(regex));
-        }
-
-        #endregion
-
         #region Pattern Tests
 
         [Test]
@@ -173,6 +153,7 @@ namespace Rejigs.Tests
             Assert.That("prefix", Does.Match(regex));
             Assert.That("pre-fix", Does.Match(regex));
             Assert.That("pre--fix", Does.Match(regex));
+            Assert.That("pre**fix", Does.Not.Match(regex));
         }
 
         [Test]

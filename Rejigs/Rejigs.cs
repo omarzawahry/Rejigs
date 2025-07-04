@@ -58,7 +58,6 @@ public class Rejigs
     public Rejigs Optional(string text) => Text(text).Optional();
 
     public Rejigs Optional(Func<Rejigs, Rejigs> pattern) => Group(pattern).Optional();
-    
 
     public Rejigs Or() => Append("|");
 
