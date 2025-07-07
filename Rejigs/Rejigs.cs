@@ -20,9 +20,7 @@ public class Rejigs
     public Rejigs Text(string text)
     {
         // Special-case: if text is empty, match only the empty string
-        if (text == "")
-            return Append("^$");
-        return Append(Regex.Escape(text));
+        return Append(text == "" ? "^$" : Regex.Escape(text));
     }
 
     /// <summary>
