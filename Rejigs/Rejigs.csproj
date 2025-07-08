@@ -3,7 +3,7 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFrameworks>net9.0;net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
     
     <PropertyGroup>
