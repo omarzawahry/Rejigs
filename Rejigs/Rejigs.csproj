@@ -3,13 +3,13 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFrameworks>net9.0;net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
     
     <PropertyGroup>
         <PackageId>Rejigs</PackageId>
         <Authors>omarzawahry</Authors>
-        <Version>1.0.4</Version>
+        <Version>1.0.5</Version>
         <Description>A fluent interface for building regular expressions</Description>
         <PackageTags>regex;regular-expressions;fluent</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
