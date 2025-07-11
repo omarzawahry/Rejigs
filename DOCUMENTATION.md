@@ -94,13 +94,115 @@ string regexPattern = pattern.Expression; // "^Hello\s\w+"
 | `Or()` | `\|` | Alternation operator | `Text("cat").Or().Text("dog")` → `cat\|dog` |
 | `Either(params Func<Rejigs, Rejigs>[] patterns)` | `(?:pattern1\|pattern2\|...)` | Matches any of the patterns | `Either(r => r.Text("cat"), r => r.Text("dog"))` → `(?:cat\|dog)` |
 
+### Options
+
+| Method | Regex Equivalent | Description | Example |
+|--------|------------------|-------------|---------|
+| `IgnoreCase()` | `RegexOptions.IgnoreCase` | Enables case-insensitive matching | `Text("hello").IgnoreCase()` → matches "HELLO", "Hello", etc. |
+| `Compiled()` | `RegexOptions.Compiled` | Compiles regex for better performance | `AnyDigit().Compiled()` → compiled for faster execution |
+
 ### Building
 
 | Method | Return Type | Description | Example |
 |--------|-------------|-------------|---------|
 | `Expression` | `string` | Gets the regex pattern as string | `pattern.Expression` |
-| `Build()` | `Regex` | Builds a Regex object | `pattern.Build()` |
-| `Build(RegexOptions options)` | `Regex` | Builds Regex with options | `pattern.Build(RegexOptions.IgnoreCase)` |
+| `Build()` | `Regex` | Builds Regex with current options | `pattern.Build()` |
+| `Build(RegexOptions options)` | `Regex` | Builds Regex with custom options | `pattern.Build(RegexOptions.IgnoreCase)` |
+
+## Performance and Options Guide
+
+### When to Use Compiled()
+
+The `Compiled()` method should be used when:
+- The regex will be used many times (hundreds or thousands of matches)
+- Performance is critical
+- The application has sufficient memory for compiled regex cache
+
+```csharp
+// Good for repeated use
+var compiledRegex = Rejigs.Create()
+                          .AtStart()
+                          .OneOrMore(r => r.AnyDigit())
+                          .Compiled()
+                          .Build();
+
+// Use in a loop or repeatedly
+for (int i = 0; i < 10000; i++)
+{
+    compiledRegex.IsMatch(input[i]);
+}
+```
+
+### When to Use IgnoreCase()
+
+Use `IgnoreCase()` when you need case-insensitive matching:
+
+```csharp
+// Email validation (case-insensitive)
+var emailRegex = Rejigs.Create()
+                        .AtStart()
+                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))
+                        .Text("@")
+                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
+                        .Text(".")
+                        .AtLeast(2).AnyInRange('a', 'z')
+                        .AtEnd()
+                        .IgnoreCase()  // Allows mixed case emails
+                        .Build();
+```
+
+### Combining Options
+
+You can chain multiple options together:
+
+```csharp
+var optimizedRegex = Rejigs.Create()
+                            .Text("important pattern")
+                            .IgnoreCase()  // Case-insensitive
+                            .Compiled()    // High performance
+                            .Build();
+```
+
+### Recommended Usage Patterns
+
+**1. Simple one-time patterns:**
+```csharp
+var regex = Rejigs.Create().Text("pattern").Build();
+```
+
+**2. Case-insensitive matching:**
+```csharp
+var regex = Rejigs.Create()
+                  .Text("pattern")
+                  .IgnoreCase()
+                  .Build();
+```
+
+**3. High-performance scenarios:**
+```csharp
+var regex = Rejigs.Create()
+                  .ComplexPattern()
+                  .Compiled()
+                  .Build();
+```
+
+**4. Production-ready patterns:**
+```csharp
+var regex = Rejigs.Create()
+                  .ComplexPattern()
+                  .IgnoreCase()
+                  .Compiled()
+                  .Build();
+```
+
+**5. Custom options override:**
+```csharp
+// Builder options are ignored when using Build(options)
+var regex = Rejigs.Create()
+                  .Text("pattern")
+                  .IgnoreCase()  // This is ignored
+                  .Build(RegexOptions.Multiline | RegexOptions.IgnoreCase);
+```
 
 ## Complete Examples
 
@@ -108,13 +210,13 @@ string regexPattern = pattern.Expression; // "^Hello\s\w+"
 
 ```csharp
 var emailPattern = Rejigs.Create()
-    .AtStart()
-    .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))
-    .Text("@")
-    .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
-    .Text(".")
-    .AtLeast(2, r => r.AnyInRange('a', 'z'))
-    .AtEnd();
+                         .AtStart()
+                         .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))
+                         .Text("@")
+                         .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
+                         .Text(".")
+                         .AtLeast(2, r => r.AnyInRange('a', 'z'))
+                         .AtEnd();
 
 var emailRegex = emailPattern.Build(RegexOptions.IgnoreCase);
 ```
@@ -123,44 +225,44 @@ var emailRegex = emailPattern.Build(RegexOptions.IgnoreCase);
 
 ```csharp
 var phonePattern = Rejigs.Create()
-    .AtStart()
-    .Optional("(")
-    .Exactly(3, r => r.AnyDigit())
-    .Optional(")")
-    .Optional(r => r.AnyOf(" -"))
-    .Exactly(3, r => r.AnyDigit())
-    .AnyOf(" -")
-    .Exactly(4, r => r.AnyDigit())
-    .AtEnd();
+                         .AtStart()
+                         .Optional("(")
+                         .Exactly(3, r => r.AnyDigit())
+                         .Optional(")")
+                         .Optional(r => r.AnyOf(" -"))
+                         .Exactly(3, r => r.AnyDigit())
+                         .AnyOf(" -")
+                         .Exactly(4, r => r.AnyDigit())
+                         .AtEnd();
 ```
 
 ### URL Validation
 
 ```csharp
 var urlPattern = Rejigs.Create()
-    .AtStart()
-    .Either(
-        r => r.Text("http"),
-        r => r.Text("https")
-    )
-    .Text("://")
-    .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
-    .Optional(r => r.Text(":").OneOrMore(p => p.AnyDigit()))
-    .ZeroOrMore(r => r.Text("/").ZeroOrMore(p => p.AnyExcept(" ")))
-    .AtEnd();
+                       .AtStart()
+                       .Either(
+                           r => r.Text("http"),
+                           r => r.Text("https")
+                       )
+                       .Text("://")
+                       .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
+                       .Optional(r => r.Text(":").OneOrMore(p => p.AnyDigit()))
+                       .ZeroOrMore(r => r.Text("/").ZeroOrMore(p => p.AnyExcept(" ")))
+                       .AtEnd();
 ```
 
 ### Date Matching (MM/DD/YYYY)
 
 ```csharp
 var datePattern = Rejigs.Create()
-    .AtStart()
-    .Between(1, 2, r => r.AnyDigit())  // Month
-    .Text("/")
-    .Between(1, 2, r => r.AnyDigit())  // Day
-    .Text("/")
-    .Exactly(4, r => r.AnyDigit())     // Year
-    .AtEnd();
+                        .AtStart()
+                        .Between(1, 2, r => r.AnyDigit())  // Month
+                        .Text("/")
+                        .Between(1, 2, r => r.AnyDigit())  // Day
+                        .Text("/")
+                        .Exactly(4, r => r.AnyDigit())     // Year
+                        .AtEnd();
 ```
 
 ### Password Validation
@@ -168,19 +270,19 @@ var datePattern = Rejigs.Create()
 ```csharp
 // At least 8 characters, contains letter and digit
 var passwordPattern = Rejigs.Create()
-    .AtStart()
-    .Grouping(r => r
-        .ZeroOrMore(p => p.AnyCharacter())
-        .AnyInRange('a', 'z')
-        .ZeroOrMore(p => p.AnyCharacter())
-    )
-    .Grouping(r => r
-        .ZeroOrMore(p => p.AnyCharacter())
-        .AnyDigit()
-        .ZeroOrMore(p => p.AnyCharacter())
-    )
-    .AtLeast(8, r => r.AnyCharacter())
-    .AtEnd();
+                            .AtStart()
+                            .Grouping(r => r
+                                .ZeroOrMore(p => p.AnyCharacter())
+                                .AnyInRange('a', 'z')
+                                .ZeroOrMore(p => p.AnyCharacter())
+                            )
+                            .Grouping(r => r
+                                .ZeroOrMore(p => p.AnyCharacter())
+                                .AnyDigit()
+                                .ZeroOrMore(p => p.AnyCharacter())
+                            )
+                            .AtLeast(8, r => r.AnyCharacter())
+                            .AtEnd();
 ```
 
 ## Method Chaining
@@ -189,12 +291,12 @@ All Rejigs methods return the Rejigs instance, enabling fluent method chaining:
 
 ```csharp
 var pattern = Rejigs.Create()
-    .AtStart()
-    .Text("Hello")
-    .AnySpace()
-    .AnyLetterOrDigit().OneOrMore()
-    .Optional("!")
-    .AtEnd();
+                    .AtStart()
+                    .Text("Hello")
+                    .AnySpace()
+                    .AnyLetterOrDigit().OneOrMore()
+                    .Optional("!")
+                    .AtEnd();
 ```
 
 ## Error Handling
@@ -231,7 +333,7 @@ To use these features, incorporate them with the `Pattern()` method:
 
 ```csharp
 var pattern = Rejigs.Create()
-    .Text("word")
-    .Pattern(@"(?=\d)")  // Positive lookahead
-    .AnyDigit();
+                    .Text("word")
+                    .Pattern(@"(?=\d)")  // Positive lookahead
+                    .AnyDigit();
 ```
