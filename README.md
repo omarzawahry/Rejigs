@@ -176,26 +176,69 @@ var passwordRegex = Rejigs.Create()
 | `Or()` | Alternation operator | `\|` |
 | `Either(params Func<Rejigs, Rejigs>[] patterns)` | Match any of the provided patterns | `(?:pattern1\|pattern2\|...)` |
 
+### Options
+| Method | Description | Regex Equivalent |
+|--------|-------------|------------------|
+| `IgnoreCase()` | Enable case-insensitive matching | `RegexOptions.IgnoreCase` |
+| `Compiled()` | Compile regex for better performance | `RegexOptions.Compiled` |
+
 ### Building
 | Method | Description | Returns |
 |--------|-------------|---------|
 | `Expression` | Get the regex pattern as string | `string` |
-| `Build()` | Build a Regex object | `Regex` |
-| `Build(RegexOptions options)` | Build a Regex object with options | `Regex` |
+| `Build()` | Build a Regex object with current options | `Regex` |
+| `Build(RegexOptions options)` | Build a Regex object with custom options | `Regex` |
 
-## 🔗 Method Chaining
+## 🔧 Performance & Options
 
-All methods return the `Rejigs` instance, allowing for fluent method chaining:
+### Case-Insensitive Matching
+Use `IgnoreCase()` for case-insensitive matching:
+
+```csharp
+var regex = Rejigs.Create()
+    .Text("hello")
+    .IgnoreCase()
+    .Build();
+
+Console.WriteLine(regex.IsMatch("HELLO")); // True
+Console.WriteLine(regex.IsMatch("Hello")); // True
+```
+
+### Performance Optimization
+Use `Compiled()` for better performance when the regex will be used many times:
 
 ```csharp
 var regex = Rejigs.Create()
     .AtStart()
-    .OneOrMore(r => r.AnyLetterOrDigit())
-    .Text("@")
-    .OneOrMore(r => r.AnyLetterOrDigit())
-    .Text(".")
-    .Between(2, 4).AnyLetterOrDigit()
-    .AtEnd()
+    .OneOrMore(r => r.AnyDigit())
+    .Compiled()
+    .IgnoreCase()  // Can combine multiple options
+    .Build();
+```
+
+### Recommended Usage Patterns
+
+**For simple, one-time use:**
+```csharp
+var regex = Rejigs.Create().Text("pattern").Build();
+```
+
+**For case-insensitive matching:**
+```csharp
+var regex = Rejigs.Create().Text("pattern").IgnoreCase().Build();
+```
+
+**For high-performance scenarios (repeated use):**
+```csharp
+var regex = Rejigs.Create().Pattern().Compiled().Build();
+```
+
+**For maximum flexibility:**
+```csharp
+var regex = Rejigs.Create()
+    .Pattern()
+    .IgnoreCase()
+    .Compiled()
     .Build();
 ```
 
