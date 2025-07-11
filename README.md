@@ -40,14 +40,14 @@ Console.WriteLine(regex.IsMatch("hello world")); // False
 ### Email Validation
 ```csharp
 var emailRegex = Rejigs.Create()
-    .AtStart()
-    .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))  // Local part
-    .Text("@")
-    .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))   // Domain
-    .Text(".")
-    .Between(2, 6).AnyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") // TLD
-    .AtEnd()
-    .Build();
+                        .AtStart()
+                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))  // Local part
+                        .Text("@")
+                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))   // Domain
+                        .Text(".")
+                        .Between(2, 6).AnyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") // TLD
+                        .AtEnd()
+                        .Build();
 
 Console.WriteLine(emailRegex.IsMatch("user@example.com")); // True
 Console.WriteLine(emailRegex.IsMatch("invalid-email")); // False
@@ -56,16 +56,16 @@ Console.WriteLine(emailRegex.IsMatch("invalid-email")); // False
 ### Phone Number Formatting
 ```csharp
 var phoneRegex = Rejigs.Create()
-    .AtStart()
-    .Optional("(")
-    .Exactly(3).AnyDigit()  // Area code
-    .Optional(")")
-    .Optional(r => r.AnyOf(" -"))
-    .Exactly(3).AnyDigit()  // Exchange
-    .Optional(r => r.AnyOf(" -"))
-    .Exactly(4).AnyDigit()  // Number
-    .AtEnd()
-    .Build();
+                       .AtStart()
+                       .Optional("(")
+                       .Exactly(3).AnyDigit()  // Area code
+                       .Optional(")")
+                       .Optional(r => r.AnyOf(" -"))
+                       .Exactly(3).AnyDigit()  // Exchange
+                       .Optional(r => r.AnyOf(" -"))
+                       .Exactly(4).AnyDigit()  // Number
+                       .AtEnd()
+                       .Build();
 
 Console.WriteLine(phoneRegex.IsMatch("(555) 123-4567")); // True
 Console.WriteLine(phoneRegex.IsMatch("555-123-4567")); // True
@@ -75,17 +75,17 @@ Console.WriteLine(phoneRegex.IsMatch("5551234567")); // True
 ### URL Validation
 ```csharp
 var urlRegex = Rejigs.Create()
-    .AtStart()
-    .Either(
-        r => r.Text("http"),
-        r => r.Text("https")
-    )
-    .Text("://")
-    .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))  // Domain
-    .Optional(r => r.Text(":").OneOrMore(c => c.AnyDigit())) // Port
-    .ZeroOrMore(r => r.Text("/").ZeroOrMore(c => c.AnyExcept(" "))) // Path
-    .AtEnd()
-    .Build();
+                     .AtStart()
+                     .Either(
+                         r => r.Text("http"),
+                         r => r.Text("https")
+                     )
+                     .Text("://")
+                     .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))  // Domain
+                     .Optional(r => r.Text(":").OneOrMore(c => c.AnyDigit())) // Port
+                     .ZeroOrMore(r => r.Text("/").ZeroOrMore(c => c.AnyExcept(" "))) // Path
+                     .AtEnd()
+                     .Build();
 
 Console.WriteLine(urlRegex.IsMatch("https://example.com/path")); // True
 Console.WriteLine(urlRegex.IsMatch("http://localhost:8080")); // True
@@ -94,16 +94,16 @@ Console.WriteLine(urlRegex.IsMatch("http://localhost:8080")); // True
 ### Credit Card Number
 ```csharp
 var creditCardRegex = Rejigs.Create()
-    .AtStart()
-    .Exactly(4).AnyDigit()
-    .Optional(r => r.AnyOf(" -"))
-    .Exactly(4).AnyDigit()
-    .Optional(r => r.AnyOf(" -"))
-    .Exactly(4).AnyDigit()
-    .Optional(r => r.AnyOf(" -"))
-    .Exactly(4).AnyDigit()
-    .AtEnd()
-    .Build();
+                            .AtStart()
+                            .Exactly(4).AnyDigit()
+                            .Optional(r => r.AnyOf(" -"))
+                            .Exactly(4).AnyDigit()
+                            .Optional(r => r.AnyOf(" -"))
+                            .Exactly(4).AnyDigit()
+                            .Optional(r => r.AnyOf(" -"))
+                            .Exactly(4).AnyDigit()
+                            .AtEnd()
+                            .Build();
 
 Console.WriteLine(creditCardRegex.IsMatch("1234 5678 9012 3456")); // True
 Console.WriteLine(creditCardRegex.IsMatch("1234-5678-9012-3456")); // True
@@ -113,14 +113,14 @@ Console.WriteLine(creditCardRegex.IsMatch("1234-5678-9012-3456")); // True
 ```csharp
 // Password must be 8-20 characters, contain uppercase, lowercase, digit, and special char
 var passwordRegex = Rejigs.Create()
-    .AtStart()
-    .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyInRange('A', 'Z'))) // Has uppercase
-    .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyInRange('a', 'z'))) // Has lowercase  
-    .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyDigit())) // Has digit
-    .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyOf("!@#$%^&*"))) // Has special
-    .Between(8, 20).AnyCharacter() // Length 8-20
-    .AtEnd()
-    .Build();
+                          .AtStart()
+                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyInRange('A', 'Z'))) // Has uppercase
+                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyInRange('a', 'z'))) // Has lowercase  
+                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyDigit())) // Has digit
+                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyOf("!@#$%^&*"))) // Has special
+                          .Between(8, 20).AnyCharacter() // Length 8-20
+                          .AtEnd()
+                          .Build();
 ```
 
 ## 📚 Complete API Reference
@@ -196,9 +196,9 @@ Use `IgnoreCase()` for case-insensitive matching:
 
 ```csharp
 var regex = Rejigs.Create()
-    .Text("hello")
-    .IgnoreCase()
-    .Build();
+                  .Text("hello")
+                  .IgnoreCase()
+                  .Build();
 
 Console.WriteLine(regex.IsMatch("HELLO")); // True
 Console.WriteLine(regex.IsMatch("Hello")); // True
@@ -209,11 +209,11 @@ Use `Compiled()` for better performance when the regex will be used many times:
 
 ```csharp
 var regex = Rejigs.Create()
-    .AtStart()
-    .OneOrMore(r => r.AnyDigit())
-    .Compiled()
-    .IgnoreCase()  // Can combine multiple options
-    .Build();
+                  .AtStart()
+                  .OneOrMore(r => r.AnyDigit())
+                  .Compiled()
+                  .IgnoreCase()  // Can combine multiple options
+                  .Build();
 ```
 
 ### Recommended Usage Patterns
@@ -236,10 +236,10 @@ var regex = Rejigs.Create().Pattern().Compiled().Build();
 **For maximum flexibility:**
 ```csharp
 var regex = Rejigs.Create()
-    .Pattern()
-    .IgnoreCase()
-    .Compiled()
-    .Build();
+                  .Pattern()
+                  .IgnoreCase()
+                  .Compiled()
+                  .Build();
 ```
 
 ## 🎯 Tips and Best Practices
