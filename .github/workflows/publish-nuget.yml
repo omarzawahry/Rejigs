@@ -62,12 +62,3 @@ jobs:
     - name: Publish to NuGet.org
       run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       if: success()
-    
-    # 10. Publish to GitHub Packages
-    - name: Setup NuGet for GitHub Packages
-      run: |
-        dotnet nuget add source --username omarzawahry --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/omarzawahry/index.json"
-    
-    - name: Publish to GitHub Packages
-      run: dotnet nuget push "./artifacts/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
-      if: success()
