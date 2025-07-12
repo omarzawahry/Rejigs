@@ -9,17 +9,19 @@ public class ComplexPatterns
     {
         var regex = Rejigs.Create()
                           .AtStart()
-                          .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
+                          .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))
                           .Text("@")
                           .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))
                           .Text(".")
-                          .AnyLetterOrDigit()
-                          .AtLeast(2)
+                          .AnyInRange('a', 'z')
+                          .Between(2, 6)
                           .AtEnd()
+                          .IgnoreCase()
                           .Build();
 
         Assert.That("user@example.com", Does.Match(regex));
         Assert.That("user.name@example.co.uk", Does.Match(regex));
+        Assert.That("user.name@example.comaqwr", Does.Not.Match(regex));
         Assert.That("user@com", Does.Not.Match(regex));
         Assert.That("@example.com", Does.Not.Match(regex));
     }
