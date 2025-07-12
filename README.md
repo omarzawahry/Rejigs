@@ -40,14 +40,15 @@ Console.WriteLine(regex.IsMatch("hello world")); // False
 ### Email Validation
 ```csharp
 var emailRegex = Rejigs.Create()
-                        .AtStart()
-                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))  // Local part
-                        .Text("@")
-                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))   // Domain
-                        .Text(".")
-                        .Between(2, 6).AnyOf("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") // TLD
-                        .AtEnd()
-                        .Build();
+                       .AtStart()
+                       .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-_"))  // Local part
+                       .Text("@")
+                       .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))   // Domain
+                       .Text(".")
+                       .Between(2, 6).AnyInRange('a', 'z') // Top-level domain (2-6 letters)
+                       .AtEnd()
+                       .IgnoreCase() // Case-insensitive matching
+                       .Build();
 
 Console.WriteLine(emailRegex.IsMatch("user@example.com")); // True
 Console.WriteLine(emailRegex.IsMatch("invalid-email")); // False
