@@ -1,6 +1,4 @@
 ![NuGet](https://img.shields.io/nuget/v/Rejigs)
-![License](https://img.shields.io/github/license/omarzawahry/Rejigs)
-![Build](https://img.shields.io/github/actions/workflow/status/omarzawahry/Rejigs/build.yml?branch=main)
 
 # Rejigs
 
