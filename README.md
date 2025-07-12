@@ -47,7 +47,8 @@ var emailRegex = Rejigs.Create()
                        .Text("@")
                        .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"))   // Domain
                        .Text(".")
-                       .Between(2, 6).AnyInRange('a', 'z') // Top-level domain (2-6 letters)
+                       .AnyInRange('a', 'z') // Top-level domain (2-6 letters)
+                       .Between(2, 6)
                        .AtEnd()
                        .IgnoreCase() // Case-insensitive matching
                        .Build();
