@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Rejigs.Tests;
 
-public class Alterations
+public class AlterationsTests
 {
     [Test]
     public void Either_MatchesAlternatives()

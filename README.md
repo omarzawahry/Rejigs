@@ -113,18 +113,84 @@ Console.WriteLine(creditCardRegex.IsMatch("1234 5678 9012 3456")); // True
 Console.WriteLine(creditCardRegex.IsMatch("1234-5678-9012-3456")); // True
 ```
 
-### Password Validation (Complex)
+## 🧩 Reusable Pattern Fragments
+
+One of Rejigs' most powerful features is the ability to create reusable pattern fragments. This helps keep your code DRY and makes complex patterns more maintainable.
+
+### Basic Fragment Usage
 ```csharp
-// Password must be 8-20 characters, contain uppercase, lowercase, digit, and special char
-var passwordRegex = Rejigs.Create()
-                          .AtStart()
-                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyInRange('A', 'Z'))) // Has uppercase
-                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyInRange('a', 'z'))) // Has lowercase  
-                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyDigit())) // Has digit
-                          .Grouping(r => r.ZeroOrMore(c => c.AnyCharacter()).OneOrMore(d => d.AnyOf("!@#$%^&*"))) // Has special
-                          .Between(8, 20).AnyCharacter() // Length 8-20
-                          .AtEnd()
-                          .Build();
+// Create a reusable domain pattern
+var domainPattern = Rejigs.Fragment()
+                          .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"));
+
+// Use the fragment in multiple places
+var emailPattern = Rejigs.Create()
+                         .Use(domainPattern)  // Local part
+                         .Text("@")
+                         .Use(domainPattern)  // Domain part
+                         .Text(".")
+                         .AnyInRange('a', 'z')
+                         .Between(2, 6)
+                         .Build();
+```
+
+### Advanced Fragment Example - Building a Complex URL Parser
+```csharp
+// Define reusable fragments
+var protocolFragment = Rejigs.Fragment()
+                             .Either(
+                                 r => r.Text("http"),
+                                 r => r.Text("https"),
+                                 r => r.Text("ftp")
+                             );
+
+var domainFragment = Rejigs.Fragment()
+                           .OneOrMore(r => r.AnyLetterOrDigit().Or().AnyOf(".-"));
+
+var portFragment = Rejigs.Fragment()
+                         .Text(":")
+                         .OneOrMore(r => r.AnyDigit());
+
+var pathFragment = Rejigs.Fragment()
+                         .Text("/")
+                         .ZeroOrMore(r => r.AnyExcept(" ?#"));
+
+// Compose them into a complete URL pattern
+var urlPattern = Rejigs.Create()
+                       .AtStart()
+                       .Use(protocolFragment)
+                       .Text("://")
+                       .Use(domainFragment)
+                       .Optional(r => r.Use(portFragment))  // Optional port
+                       .ZeroOrMore(r => r.Use(pathFragment)) // Optional paths
+                       .AtEnd()
+                       .Build();
+
+Console.WriteLine(urlPattern.IsMatch("https://example.com:8080/api/users")); // True
+Console.WriteLine(urlPattern.IsMatch("ftp://files.company.com/downloads")); // True
+```
+
+### Fragment Best Practices
+- **Create semantic fragments**: Name your fragments based on what they represent (e.g., `emailLocalPart`, `phoneAreaCode`)
+- **Keep fragments focused**: Each fragment should have a single responsibility
+- **Combine fragments**: Build complex patterns by combining simpler fragments
+- **Test fragments independently**: You can test fragments by calling `.Build()` on them directly
+
+```csharp
+// Good: Semantic, focused fragments
+var usernameFragment = Rejigs.Fragment()
+                             .AnyLetterOrDigit()
+                             .Between(3, 20);
+
+var passwordFragment = Rejigs.Fragment()
+                             .AnyLetterOrDigit()
+                             .Between(8, 50);
+
+// Good: Combining fragments
+var loginPattern = Rejigs.Create()
+                         .Use(usernameFragment)
+                         .Text(":")
+                         .Use(passwordFragment);
 ```
 
 ## 📚 Complete API Reference
@@ -133,6 +199,12 @@ var passwordRegex = Rejigs.Create()
 | Method | Description | Regex Equivalent |
 |--------|-------------|------------------|
 | `Rejigs.Create()` | Creates a new regex builder instance | - |
+| `Rejigs.Fragment()` | Creates a new reusable fragment instance | - |
+
+### Fragments
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `Use(Rejigs fragment)` | Incorporates a fragment into the current pattern | `Rejigs` |
 
 ### Anchors
 | Method | Description | Regex Equivalent |
