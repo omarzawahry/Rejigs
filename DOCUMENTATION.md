@@ -37,6 +37,13 @@ string regexPattern = pattern.Expression; // "^Hello\s\w+"
 | Method | Regex Equivalent | Description |
 |--------|------------------|-------------|
 | `Rejigs.Create()` | N/A | Creates a new Rejigs instance |
+| `Rejigs.Fragment()` | N/A | Creates a new reusable fragment instance |
+
+### Fragments
+
+| Method | Regex Equivalent | Description | Example |
+|--------|------------------|-------------|---------|
+| `Use(Rejigs fragment)` | `fragment pattern` | Incorporates a fragment into the current pattern | `Use(domainFragment)` → incorporates the domain fragment |
 
 ### Text Matching
 
