@@ -6,10 +6,7 @@ public partial class Rejigs
     ///     Appends a regex pattern that represents an alternation (|).
     /// </summary>
     /// <returns>The current Rejigs instance.</returns>
-    public Rejigs Or()
-    {
-        return Append("|");
-    }
+    public Rejigs Or() => Append("|");
 
     /// <summary>
     ///     Appends a regex pattern that matches either of the specified patterns.
