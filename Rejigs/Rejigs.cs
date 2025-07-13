@@ -30,78 +30,6 @@ public partial class Rejigs
     /// <param name="rawPattern">The raw regex pattern to append.</param>
     /// <returns>The current Rejigs instance.</returns>
     public Rejigs Pattern(string rawPattern) => Append(rawPattern);
-    
-    
-
-    /// <summary>
-    /// Appends a regex pattern that matches any digit (\d).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyDigit() => Append(@"\d");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any non-digit (\D).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyNonDigit() => Append(@"\D");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any letter or digit (\w).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyLetterOrDigit() => Append(@"\w");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any non-letter or digit (\W).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyNonLetterOrDigit() => Append(@"\W");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any whitespace character (\s).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnySpace() => Append(@"\s");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any non-whitespace character (\S).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyNonSpace() => Append(@"\S");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any character (.).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyCharacter() => Append(".");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any one of the specified characters.
-    /// </summary>
-    /// <param name="characters">The characters to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyOf(string characters) => Append($"[{Regex.Escape(characters)}]");
-
-    /// <summary>
-    /// Appends a regex pattern that matches any character in the specified range.
-    /// </summary>
-    /// <param name="from">The starting character of the range.</param>
-    /// <param name="to">The ending character of the range.</param>
-    /// <returns>The current Rejigs instance.</returns>
-    /// <exception cref="ArgumentException">Thrown when the range is invalid.</exception>
-    public Rejigs AnyInRange(char from, char to)
-    {
-        if (from > to)
-            throw new ArgumentException($"Invalid range: '{from}'-'{to}'");
-        return Append($"[{from}-{to}]");
-    }
-
-    /// <summary>
-    /// Appends a regex pattern that matches any character except the specified characters.
-    /// </summary>
-    /// <param name="characters">The characters to exclude from the match.</param>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs AnyExcept(string characters) => Append($"[^{Regex.Escape(characters)}]");
 
     private Rejigs ZeroOrMore() => Append("*");
     private Rejigs OneOrMore() => Append("+");
@@ -192,44 +120,6 @@ public partial class Rejigs
     /// <param name="pattern">The pattern to match.</param>
     /// <returns>The current Rejigs instance.</returns>
     public Rejigs Optional(Func<Rejigs, Rejigs> pattern) => Group(pattern).Optional();
-
-    /// <summary>
-    /// Sets the regex options to ignore case when matching.
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs IgnoreCase()
-    {
-        _options |= RegexOptions.IgnoreCase;
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the regex options to compile the regex for faster execution.
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs Compiled()
-    {
-        _options |= RegexOptions.Compiled;
-        return this;
-    }
-
-    /// <summary>
-    /// Gets the constructed regex expression as a string.
-    /// </summary>
-    public string Expression => _pattern.ToString();
-
-    /// <summary>
-    /// Builds a Regex object with the current expression and options set in the builder.
-    /// </summary>
-    /// <returns>A Regex object.</returns>
-    public Regex Build() => new(Expression, _options);
-
-    /// <summary>
-    /// Builds a Regex object with the current expression and specified options.
-    /// </summary>
-    /// <param name="options">The options to use when building the Regex.</param>
-    /// <returns>A Regex object.</returns>
-    public Regex Build(RegexOptions options) => new(Expression, options);
 
     private Rejigs Append(string value)
     {

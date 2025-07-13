@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Rejigs.Tests;
 
-public class Building
+public class BuildingTests
 {
     [Test]
     public void Expression_ReturnsCorrectRegexString()
@@ -41,6 +41,7 @@ public class Building
                           .Text("hello")
                           .IgnoreCase()
                           .Build();
+        
         Assert.That(regex.Options.HasFlag(RegexOptions.IgnoreCase), Is.True);
         Assert.That(regex.IsMatch("HELLO"), Is.True);
         Assert.That(regex.IsMatch("hello"), Is.True);
@@ -53,6 +54,7 @@ public class Building
                           .Text("abc")
                           .Compiled()
                           .Build();
+        
         Assert.That(regex.Options.HasFlag(RegexOptions.Compiled), Is.True);
     }
 
@@ -64,6 +66,7 @@ public class Building
                            .Compiled()
                            .IgnoreCase()
                            .Build();
+        
         Assert.That(regex.Options.HasFlag(RegexOptions.Compiled), Is.True);
         Assert.That(regex.Options.HasFlag(RegexOptions.IgnoreCase), Is.True);
         Assert.That(regex.IsMatch("ABC"), Is.True);
