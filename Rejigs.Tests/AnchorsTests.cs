@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Rejigs.Tests;
 
-public class Anchors
+public class AnchorsTests
 {
     [Test]
     public void AtStart_AnchorsBeginingOfLine()
