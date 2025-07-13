@@ -8,6 +8,22 @@ public partial class Rejigs
     ///     Gets the constructed regex expression as a string.
     /// </summary>
     public string Expression => _pattern.ToString();
+
+    /// <summary>
+    /// Creates a new instance of the Rejigs regex builder for creating reusable fragments.
+    /// </summary>
+    public static Rejigs Fragment() => new();
+
+    /// <summary>
+    /// Uses a pre-built Rejigs fragment in the current pattern.
+    /// </summary>
+    /// <param name="fragment">The Rejigs fragment to include in the pattern.</param>
+    /// <returns>The current Rejigs instance for chaining.</returns>
+    public Rejigs Use(Rejigs fragment)
+    {
+        _pattern.Append(fragment._pattern.ToString());
+        return this;
+    }
     
     /// <summary>
     ///     Sets the regex options to ignore case when matching.
