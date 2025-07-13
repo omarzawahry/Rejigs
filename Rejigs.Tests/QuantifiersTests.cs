@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Rejigs.Tests;
 
-public class Quantifiers
+public class QuantifiersTests
 {
     [Test]
     public void ZeroOrMore_WithText_MatchesOptionalRepeatedText()
