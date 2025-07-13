@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Rejigs;
 
-public class Rejigs
+public partial class Rejigs
 {
     private readonly StringBuilder _pattern = new();
     private RegexOptions _options = RegexOptions.None;
@@ -214,34 +214,6 @@ public class Rejigs
     /// <param name="pattern">The pattern to match.</param>
     /// <returns>The current Rejigs instance.</returns>
     public Rejigs Optional(Func<Rejigs, Rejigs> pattern) => Group(pattern).Optional();
-
-    /// <summary>
-    /// Appends a regex pattern that represents an alternation (|).
-    /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs Or() => Append("|");
-
-    /// <summary>
-    /// Appends a regex pattern that matches either of the specified patterns.
-    /// </summary>
-    /// <param name="patterns">The patterns to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
-    public Rejigs Either(params Func<Rejigs, Rejigs>[] patterns)
-    {
-        if (patterns.Length == 0) return this;
-
-        Append("(?:");
-        var first = true;
-
-        foreach (var pattern in patterns)
-        {
-            if (!first) Append("|");
-            pattern(new Rejigs())._pattern.ToString().Apply(p => Append(p));
-            first = false;
-        }
-
-        return Append(")");
-    }
 
     /// <summary>
     /// Sets the regex options to ignore case when matching.
