@@ -1,4 +1,6 @@
 ![NuGet](https://img.shields.io/nuget/v/Rejigs)
+[![NuGet](https://img.shields.io/nuget/dt/rejigs.svg)](https://www.nuget.org/packages/rejigs) 
+![Build Status](https://github.com/omarzawahry/Rejigs/actions/workflows/publish-nuget.yml/badge.svg?branch=main)
 
 # Rejigs
 
