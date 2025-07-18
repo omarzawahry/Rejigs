@@ -265,6 +265,125 @@ var loginPattern = Rejigs.Create()
 | `Build()` | Build a Regex object with current options | `Regex` |
 | `Build(RegexOptions options)` | Build a Regex object with custom options | `Regex` |
 
+### Common Patterns
+Rejigs includes predefined methods for common regex patterns:
+
+| Method | Description |
+|--------|-------------|
+| `Email()` | Match a valid email address pattern |
+| `Url()` | Match a URL pattern (http/https) |
+| `IPv4()` | Match an IPv4 address pattern |
+| `PhoneNumber()` | Match a US phone number pattern (various formats) |
+| `CreditCard()` | Match a credit card number pattern |
+| `StrongPassword()` | Match a strong password pattern (at least 8 chars, uppercase, lowercase, digit, special char) |
+| `HexColor()` | Match a hexadecimal color code (#RGB or #RRGGBB) |
+| `DateMMDDYYYY()` | Match a date in MM/DD/YYYY format |
+| `DateDDMMYYYY()` | Match a date in DD/MM/YYYY format |
+| `DateISO()` | Match a date in YYYY-MM-DD format (ISO 8601) |
+| `Time24Hour()` | Match time in 24-hour format (HH:MM) |
+| `Time12Hour()` | Match time in 12-hour format with AM/PM |
+| `ZipCode()` | Match a US ZIP code (5 digits or 5+4 format) |
+| `SSN()` | Match a US Social Security Number (XXX-XX-XXXX format) |
+| `DateUTC()` | Match a UTC date pattern in ISO 8601 format with timezone |
+| `MacAddress()` | Match a MAC address pattern |
+
+## ✅ Validation
+
+Rejigs provides built-in validation methods that throw exceptions on validation failure, making them ideal for scenarios where you need strict validation with immediate feedback.
+
+### Validation Methods
+| Method | Description | Returns | Exception |
+|--------|-------------|---------|-----------|
+| `Validate(string input, string? errorMessage = null)` | Validates input against the pattern and throws exception if validation fails | `bool` (always true on success) | `RejigsValidationException` |
+
+### Basic Validation Usage
+```csharp
+var emailValidator = Rejigs.Create().Email();
+
+try 
+{
+    emailValidator.Validate("user@example.com"); // Returns true
+    Console.WriteLine("Email is valid!");
+}
+catch (RejigsValidationException ex)
+{
+    Console.WriteLine($"Validation failed: {ex.Message}");
+}
+```
+
+### Using Custom Error Messages
+```csharp
+var phoneValidator = Rejigs.Create().PhoneNumber();
+
+try 
+{
+    phoneValidator.Validate("invalid-phone", "Please enter a valid US phone number");
+}
+catch (RejigsValidationException ex)
+{
+    Console.WriteLine(ex.Message); // "Please enter a valid US phone number"
+}
+```
+
+### Form Validation Example
+```csharp
+var passwordValidator = Rejigs.Create().StrongPassword();
+
+string userPassword = GetUserInput();
+try 
+{
+    passwordValidator.Validate(userPassword, 
+        "Password must be at least 8 characters with uppercase, lowercase, digit, and special character");
+    // Password is valid, proceed with registration
+    ProcessValidPassword(userPassword);
+}
+catch (RejigsValidationException ex)
+{
+    // Show validation error to user
+    DisplayError(ex.Message);
+}
+```
+
+### Validation vs IsMatch()
+For scenarios where you prefer handling validation results without exceptions, use the standard `Build().IsMatch()` pattern:
+
+```csharp
+// Exception-based validation (recommended for user input)
+try 
+{
+    validator.Validate(input);
+    // Handle valid input
+}
+catch (RejigsValidationException)
+{
+    // Handle invalid input
+}
+
+// Non-exception validation (recommended for flow control)
+var regex = Rejigs.Create().Email().Build();
+if (regex.IsMatch(input))
+{
+    // Handle valid input
+}
+else
+{
+    // Handle invalid input
+}
+```
+
+### Performance Considerations
+The `Validate()` method creates a new Regex instance each time it's called. For high-frequency validation scenarios, consider:
+
+```csharp
+// For better performance with repeated validation
+var compiledValidator = Rejigs.Create().Email().Compiled();
+// Use compiledValidator.Validate() multiple times
+
+// Or cache the built regex for non-exception validation
+var cachedRegex = Rejigs.Create().Email().Compiled().Build();
+// Use cachedRegex.IsMatch() multiple times
+```
+
 ## 🔧 Performance & Options
 
 ### Case-Insensitive Matching
