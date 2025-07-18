@@ -1,5 +1,5 @@
 ![NuGet](https://img.shields.io/nuget/v/Rejigs)
-![Build Status](https://github.com/omarzawahry/Rejigs/workflows/CI/badge.svg)
+![Build Status](https://github.com/omarzawahry/Rejigs/actions/workflows/publish-nuget.yml/badge.svg?branch=main)
 
 # Rejigs
 
