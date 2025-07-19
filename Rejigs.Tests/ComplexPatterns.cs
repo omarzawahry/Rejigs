@@ -4,8 +4,12 @@ namespace Rejigs.Tests;
 
 public class ComplexPatterns
 {
-    [Test]
-    public void ValidatesEmailAddress()
+    [TestCase("user@example.com", true)]
+    [TestCase("user.name@example.co.uk", true)]
+    [TestCase("user.name@example.comaqwr", false)]
+    [TestCase("user@com", false)]
+    [TestCase("@example.com", false)]
+    public void ValidatesEmailAddress(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
                           .AtStart()
@@ -19,15 +23,17 @@ public class ComplexPatterns
                           .IgnoreCase()
                           .Build();
 
-        Assert.That("user@example.com", Does.Match(regex));
-        Assert.That("user.name@example.co.uk", Does.Match(regex));
-        Assert.That("user.name@example.comaqwr", Does.Not.Match(regex));
-        Assert.That("user@com", Does.Not.Match(regex));
-        Assert.That("@example.com", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void ValidatesPhoneNumber()
+    [TestCase("123-456-7890", true)]
+    [TestCase("1234567890", true)]
+    [TestCase("+1-123-456-7890", true)]
+    [TestCase("abc-def-ghij", false)]
+    public void ValidatesPhoneNumber(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
                           .Optional(r => r.Text("+"))
@@ -39,14 +45,18 @@ public class ComplexPatterns
                           .Grouping(r => r.AnyDigit().Exactly(4))
                           .Build();
 
-        Assert.That("123-456-7890", Does.Match(regex));
-        Assert.That("1234567890", Does.Match(regex));
-        Assert.That("+1-123-456-7890", Does.Match(regex));
-        Assert.That("abc-def-ghij", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void ValidatesISODate()
+    [TestCase("2023-01-01", true)]
+    [TestCase("2023-12-31", true)]
+    [TestCase("2023-13-01", false)]
+    [TestCase("2023-12-32", false)]
+    [TestCase("23-01-01", false)]
+    public void ValidatesISODate(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
                           .AtStart()
@@ -68,15 +78,18 @@ public class ComplexPatterns
                           .AtEnd()
                           .Build();
 
-        Assert.That("2023-01-01", Does.Match(regex));
-        Assert.That("2023-12-31", Does.Match(regex));
-        Assert.That("2023-13-01", Does.Not.Match(regex));
-        Assert.That("2023-12-32", Does.Not.Match(regex));
-        Assert.That("23-01-01", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void ValidatesIPv4Address()
+    [TestCase("192.168.0.1", true)]
+    [TestCase("127.0.0.1", true)]
+    [TestCase("255.255.255.255", true)]
+    [TestCase("256.0.0.1", false)]
+    [TestCase("192.168.0", false)]
+    public void ValidatesIPv4Address(string input, bool shouldMatch)
     {
         var octet = Rejigs.Create()
                           .Either(
@@ -101,10 +114,9 @@ public class ComplexPatterns
                           .AtEnd()
                           .Build();
 
-        Assert.That("192.168.0.1", Does.Match(regex));
-        Assert.That("127.0.0.1", Does.Match(regex));
-        Assert.That("255.255.255.255", Does.Match(regex));
-        Assert.That("256.0.0.1", Does.Not.Match(regex));
-        Assert.That("192.168.0", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 }

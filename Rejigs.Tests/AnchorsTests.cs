@@ -4,38 +4,54 @@ namespace Rejigs.Tests;
 
 public class AnchorsTests
 {
-    [Test]
-    public void AtStart_AnchorsBeginingOfLine()
+    [TestCase("abc", true)]
+    [TestCase("abcdef", true)]
+    [TestCase("xabc", false)]
+    public void AtStart_AnchorsBeginingOfLine(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().AtStart().Text("abc").Build();
-        Assert.That("abc", Does.Match(regex));
-        Assert.That("abcdef", Does.Match(regex));
-        Assert.That("xabc", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void AtEnd_AnchorsEndOfLine()
+    [TestCase("abc", true)]
+    [TestCase("xabc", true)]
+    [TestCase("abcx", false)]
+    public void AtEnd_AnchorsEndOfLine(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().Text("abc").AtEnd().Build();
-        Assert.That("abc", Does.Match(regex));
-        Assert.That("xabc", Does.Match(regex));
-        Assert.That("abcx", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void AtWordBoundary_MatchesAtWordBoundary()
+    [TestCase("cat", true)]
+    [TestCase("the cat", true)]
+    [TestCase("tomcat", false)]
+    public void AtWordBoundary_MatchesAtWordBoundary(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().AtWordBoundary().Text("cat").Build();
-        Assert.That("cat", Does.Match(regex));
-        Assert.That("the cat", Does.Match(regex));
-        Assert.That("tomcat", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void NotAtWordBoundary_MatchesNotAtWordBoundary()
+    [TestCase("tomcat", true)]
+    [TestCase("cat", false)]
+    public void NotAtWordBoundary_MatchesNotAtWordBoundary(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().NotAtWordBoundary().Text("cat").Build();
-        Assert.That("tomcat", Does.Match(regex));
-        Assert.That("cat", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 }

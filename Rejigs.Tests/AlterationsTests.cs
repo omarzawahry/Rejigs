@@ -4,8 +4,11 @@ namespace Rejigs.Tests;
 
 public class AlterationsTests
 {
-    [Test]
-    public void Either_MatchesAlternatives()
+    [TestCase("cat", true)]
+    [TestCase("dog", true)]
+    [TestCase("mouse", true)]
+    [TestCase("hamster", false)]
+    public void Either_MatchesAlternatives(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
                           .Either(
@@ -14,14 +17,16 @@ public class AlterationsTests
                               r => r.Text("mouse")
                           ).Build();
 
-        Assert.That("cat", Does.Match(regex));
-        Assert.That("dog", Does.Match(regex));
-        Assert.That("mouse", Does.Match(regex));
-        Assert.That("hamster", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void Or_MatchesAlternatives()
+    [TestCase("cat", true)]
+    [TestCase("dog", true)]
+    [TestCase("catdog", true)]
+    public void Or_MatchesAlternatives(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
                           .Text("cat")
@@ -29,8 +34,9 @@ public class AlterationsTests
                           .Text("dog")
                           .Build();
 
-        Assert.That("cat", Does.Match(regex));
-        Assert.That("dog", Does.Match(regex));
-        Assert.That("catdog", Does.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 }
