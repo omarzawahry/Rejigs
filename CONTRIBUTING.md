@@ -4,15 +4,15 @@ Thank you for your interest in contributing to Rejigs! 🎉 We welcome contribut
 
 ## 📋 Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Setup](#development-setup)
-- [Making Changes](#making-changes)
-- [Testing](#testing)
-- [Submitting Changes](#submitting-changes)
-- [Code Style Guidelines](#code-style-guidelines)
-- [Reporting Issues](#reporting-issues)
-- [Feature Requests](#feature-requests)
+- [Code of Conduct](#-code-of-conduct)
+- [Getting Started](#-getting-started)
+- [Development Setup](#-development-setup)
+- [Making Changes](#-making-changes)
+- [Testing](#-testing)
+- [Submitting Changes](#-submitting-changes)
+- [Code Style Guidelines](#-code-style-guidelines)
+- [Reporting Issues](#-reporting-issues)
+- [Feature Requests](#-feature-requests)
 
 ## 🤝 Code of Conduct
 
