@@ -1,5 +1,5 @@
 ![NuGet](https://img.shields.io/nuget/v/Rejigs)
-[![NuGet](https://img.shields.io/nuget/dt/rejigs.svg)](https://www.nuget.org/packages/rejigs) 
+[![NuGet](https://img.shields.io/nuget/dt/rejigs.svg)](https://www.nuget.org/packages/rejigs)
 ![Build Status](https://github.com/omarzawahry/Rejigs/actions/workflows/publish-nuget.yml/badge.svg?branch=main)
 
 # Rejigs
@@ -19,6 +19,7 @@ dotnet add package Rejigs
 ```
 
 Or via Package Manager Console:
+
 ```
 Install-Package Rejigs
 ```
@@ -42,6 +43,7 @@ Console.WriteLine(regex.IsMatch("hello world")); // False
 ## 📖 Real-World Example
 
 ### Email Validation
+
 ```csharp
 var emailRegex = Rejigs.Create()
                        .AtStart()
@@ -68,6 +70,7 @@ Console.WriteLine(emailRegex.IsMatch("invalid-email")); // False
 5. **Use `AtStart()` and `AtEnd()`**: For exact matches, always anchor your patterns
 
 ## 📚 Documentation
+
 For detailed documentation, examples, and API reference, visit the [Rejigs Documentation](https://github.com/omarzawahry/Rejigs/wiki).
 
 ## 📝 License
@@ -76,4 +79,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel have a look at our [contributing guidelines](CONTRIBUTING.md).
