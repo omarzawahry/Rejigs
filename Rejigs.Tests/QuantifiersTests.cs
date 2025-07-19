@@ -4,8 +4,11 @@ namespace Rejigs.Tests;
 
 public class QuantifiersTests
 {
-    [Test]
-    public void ZeroOrMore_WithText_MatchesOptionalRepeatedText()
+    [TestCase("prefix", true)]
+    [TestCase("pre-fix", true)]
+    [TestCase("pre--fix", true)]
+    [TestCase("pre**fix", false)]
+    public void ZeroOrMore_WithText_MatchesOptionalRepeatedText(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
             .Text("pre")
@@ -13,14 +16,18 @@ public class QuantifiersTests
             .Text("fix")
             .Build();
 
-        Assert.That("prefix", Does.Match(regex));
-        Assert.That("pre-fix", Does.Match(regex));
-        Assert.That("pre--fix", Does.Match(regex));
-        Assert.That("pre**fix", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void ZeroOrMore_CombinedWithOtherPatterns()
+    [TestCase("AZ", true)]
+    [TestCase("A1Z", true)]
+    [TestCase("A123Z", true)]
+    [TestCase("A1B2Z", false)]
+    [TestCase("ABC", false)]
+    public void ZeroOrMore_CombinedWithOtherPatterns(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
             .AtStart()
@@ -30,84 +37,109 @@ public class QuantifiersTests
             .AtEnd()
             .Build();
 
-        Assert.That("AZ", Does.Match(regex));
-        Assert.That("A1Z", Does.Match(regex));
-        Assert.That("A123Z", Does.Match(regex));
-        Assert.That("A1B2Z", Does.Not.Match(regex));
-        Assert.That("ABC", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void OneOrMore_MatchesRepeatedPattern()
+    [TestCase("a", true)]
+    [TestCase("aaa", true)]
+    [TestCase("", false)]
+    public void OneOrMore_MatchesRepeatedPattern(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().OneOrMore(r => r.Text("a")).Build();
-        Assert.That("a", Does.Match(regex));
-        Assert.That("aaa", Does.Match(regex));
-        Assert.That("", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void Optional_MatchesOptionalPattern()
+    [TestCase("", true)]
+    [TestCase("a", true)]
+    [TestCase("aa", true)]
+    public void Optional_MatchesOptionalPattern(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().Optional(r => r.Text("a")).Build();
-        Assert.That("", Does.Match(regex));
-        Assert.That("a", Does.Match(regex));
-        Assert.That("aa", Does.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void Optional_WithText_MatchesOptionalText()
+    [TestCase("colo", false)]
+    [TestCase("colou", true)]
+    [TestCase("colour", true)]
+    [TestCase("colours", true)]
+    public void Optional_WithText_MatchesOptionalText(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
             .Text("colou")
             .Optional("r")
             .Build();
 
-        Assert.That("colo", Does.Not.Match(regex));
-        Assert.That("colou", Does.Match(regex));
-        Assert.That("colour", Does.Match(regex));
-        Assert.That("colours", Does.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void Optional_WithPattern_MatchesOptionalPattern()
+    [TestCase("fix", true)]
+    [TestCase("pre-fix", true)]
+    public void Optional_WithPattern_MatchesOptionalPattern(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
             .Optional(r => r.Text("pre-"))
             .Text("fix")
             .Build();
 
-        Assert.That("fix", Does.Match(regex));
-        Assert.That("pre-fix", Does.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void Exactly_MatchesExactCount()
+    [TestCase("123", true)]
+    [TestCase("12", false)]
+    [TestCase("1234", false)]
+    public void Exactly_MatchesExactCount(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().AtStart().AnyDigit().Exactly(3).AtEnd().Build();
-        Assert.That("123", Does.Match(regex));
-        Assert.That("12", Does.Not.Match(regex));
-        Assert.That("1234", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void AtLeast_MatchesMinimumCount()
+    [TestCase("12", true)]
+    [TestCase("123", true)]
+    [TestCase("1", false)]
+    public void AtLeast_MatchesMinimumCount(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().AnyDigit().AtLeast(2).Build();
-        Assert.That("12", Does.Match(regex));
-        Assert.That("123", Does.Match(regex));
-        Assert.That("1", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void Between_MatchesRangeOfCounts()
+    [TestCase("12", true)]
+    [TestCase("123", true)]
+    [TestCase("1234", true)]
+    [TestCase("1", false)]
+    [TestCase("12345", true)]
+    public void Between_MatchesRangeOfCounts(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().AnyDigit().Between(2, 4).Build();
-        Assert.That("12", Does.Match(regex));
-        Assert.That("123", Does.Match(regex));
-        Assert.That("1234", Does.Match(regex));
-        Assert.That("1", Does.Not.Match(regex));
-        Assert.That("12345", Does.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
     [Test]
@@ -135,24 +167,32 @@ public class QuantifiersTests
         Assert.Throws<ArgumentException>(() => Rejigs.Create().AnyInRange('z', 'a'));
     }
 
-    [Test]
-    public void Quantifiers_WithUnicodeCharacters()
+    [TestCase("あ", true)]
+    [TestCase("あああ", true)]
+    [TestCase("", false)]
+    public void Quantifiers_WithUnicodeCharacters(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create().OneOrMore(r => r.Text("あ")).Build();
-        Assert.That("あ", Does.Match(regex));
-        Assert.That("あああ", Does.Match(regex));
-        Assert.That("", Does.Not.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 
-    [Test]
-    public void ChainedQuantifiers_NestedGroups()
+    [TestCase("", true)]
+    [TestCase("x", true)]
+    [TestCase("xx", true)]
+    [TestCase("xxx", true)]
+    public void ChainedQuantifiers_NestedGroups(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
             .ZeroOrMore(r => r.OneOrMore(rr => rr.Text("x")))
             .Build();
-        Assert.That("", Does.Match(regex));
-        Assert.That("x", Does.Match(regex));
-        Assert.That("xx", Does.Match(regex));
-        Assert.That("xxx", Does.Match(regex));
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 }

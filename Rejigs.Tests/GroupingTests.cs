@@ -4,15 +4,18 @@ namespace Rejigs.Tests;
 
 public class GroupingTests
 {
-    [Test]
-    public void Grouping_WithQuantifier()
+    [TestCase("abcabc", true)]
+    [TestCase("abc", false)]
+    public void Grouping_WithQuantifier(string input, bool shouldMatch)
     {
         var regex = Rejigs.Create()
                           .Grouping(r => r.Text("abc"))
                           .Exactly(2)
                           .Build();
 
-        Assert.That("abcabc", Does.Match(regex));
-        Assert.That("abc", Does.Not.Match(regex));
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
     }
 }

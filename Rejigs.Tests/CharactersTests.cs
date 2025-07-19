@@ -4,108 +4,139 @@ namespace Rejigs.Tests;
 
 public class Character
 {
-    [Test]
-        public void AnyDigit_MatchesSingleDigit()
-        {
-            var regex = Rejigs.Create().AnyDigit().Build();
-            
-            Assert.That("5", Does.Match(regex));
-            Assert.That("a", Does.Not.Match(regex));
-        }
+    [TestCase("5", true)]
+    [TestCase("a", false)]
+    public void AnyDigit_MatchesSingleDigit(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyDigit().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyNonDigit_MatchesSingleNonDigit()
-        {
-            var regex = Rejigs.Create().AnyNonDigit().Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That("_", Does.Match(regex));
-            Assert.That("$", Does.Match(regex));
-            Assert.That("5", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase("_", true)]
+    [TestCase("$", true)]
+    [TestCase("5", false)]
+    public void AnyNonDigit_MatchesSingleNonDigit(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyNonDigit().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyLetterOrDigit_MatchesWordCharacter()
-        {
-            var regex = Rejigs.Create().AnyLetterOrDigit().Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That("_", Does.Match(regex));
-            Assert.That("1", Does.Match(regex));
-            Assert.That("$", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase("_", true)]
+    [TestCase("1", true)]
+    [TestCase("$", false)]
+    public void AnyLetterOrDigit_MatchesWordCharacter(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyLetterOrDigit().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyNonLetterOrDigit_MatchesNonWordCharacter()
-        {
-            var regex = Rejigs.Create().AnyNonLetterOrDigit().Build();
-            Assert.That("$", Does.Match(regex));
-            Assert.That("a", Does.Not.Match(regex));
-            Assert.That("1", Does.Not.Match(regex));
-        }
+    [TestCase("$", true)]
+    [TestCase("a", false)]
+    [TestCase("1", false)]
+    public void AnyNonLetterOrDigit_MatchesNonWordCharacter(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyNonLetterOrDigit().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnySpace_MatchesWhitespace()
-        {
-            var regex = Rejigs.Create().AnySpace().Build();
-            
-            Assert.That(" ", Does.Match(regex));
-            Assert.That("\t", Does.Match(regex));
-            Assert.That("a", Does.Not.Match(regex));
-        }
+    [TestCase(" ", true)]
+    [TestCase("\t", true)]
+    [TestCase("a", false)]
+    public void AnySpace_MatchesWhitespace(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnySpace().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyNonSpace_MatchesNonWhitespace()
-        {
-            var regex = Rejigs.Create().AnyNonSpace().Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That(" ", Does.Not.Match(regex));
-            Assert.That("\t", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase(" ", false)]
+    [TestCase("\t", false)]
+    public void AnyNonSpace_MatchesNonWhitespace(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyNonSpace().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyCharacter_MatchesAnyCharacter()
-        {
-            var regex = Rejigs.Create().AnyCharacter().Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That("1", Does.Match(regex));
-            Assert.That("$", Does.Match(regex));
-            Assert.That("\n", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase("1", true)]
+    [TestCase("$", true)]
+    [TestCase("\n", false)]
+    public void AnyCharacter_MatchesAnyCharacter(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyCharacter().Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyOf_MatchesCharactersInSet()
-        {
-            var regex = Rejigs.Create().AnyOf("abc").Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That("b", Does.Match(regex));
-            Assert.That("c", Does.Match(regex));
-            Assert.That("z", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase("b", true)]
+    [TestCase("c", true)]
+    [TestCase("z", false)]
+    public void AnyOf_MatchesCharactersInSet(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyOf("abc").Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyInRange_MatchesCharactersInRange()
-        {
-            var regex = Rejigs.Create().AnyInRange('a', 'f').Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That("d", Does.Match(regex));
-            Assert.That("f", Does.Match(regex));
-            Assert.That("af", Does.Match(regex));
-            Assert.That("g", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase("d", true)]
+    [TestCase("f", true)]
+    [TestCase("af", true)]
+    [TestCase("g", false)]
+    public void AnyInRange_MatchesCharactersInRange(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyInRange('a', 'f').Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 
-        [Test]
-        public void AnyExcept_MatchesCharactersNotInSet()
-        {
-            var regex = Rejigs.Create().AnyExcept("xyz").Build();
-            
-            Assert.That("a", Does.Match(regex));
-            Assert.That("aq", Does.Match(regex));
-            Assert.That("x", Does.Not.Match(regex));
-            Assert.That("y", Does.Not.Match(regex));
-        }
+    [TestCase("a", true)]
+    [TestCase("aq", true)]
+    [TestCase("x", false)]
+    [TestCase("y", false)]
+    public void AnyExcept_MatchesCharactersNotInSet(string input, bool shouldMatch)
+    {
+        var regex = Rejigs.Create().AnyExcept("xyz").Build();
+        
+        if (shouldMatch)
+            Assert.That(input, Does.Match(regex));
+        else
+            Assert.That(input, Does.Not.Match(regex));
+    }
 }
