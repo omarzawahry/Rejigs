@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "timezone": "UTC",
+  "schedule": ["before 6am on friday"],
+  "labels": ["dependencies"],
+  "assignees": ["omarzawahry"],
+  "reviewers": ["omarzawahry"],
+  "platformAutomerge": false,
+  "automerge": false,
+  "packageRules": [
+    {
+      "description": "Require manual review for all updates",
+      "matchUpdateTypes": ["patch", "minor", "major"],
+      "automerge": false,
+      "labels": ["dependencies"]
+    },
+    {
+      "description": "Group all Microsoft.Extensions packages together",
+      "matchPackagePatterns": ["Microsoft.Extensions.*"],
+      "groupName": "Microsoft.Extensions packages",
+      "automerge": false
+    },
+    {
+      "description": "Handle .NET preview versions carefully",
+      "matchPackagePatterns": ["*"],
+      "matchCurrentVersion": "/(preview|alpha|beta|rc)/",
+      "automerge": false,
+      "labels": ["preview", "dependencies"]
+    }
+  ],
+  "nuget": {
+    "enabled": true
+  },
+  "github-actions": {
+    "enabled": true
+  },
+  "commitMessagePrefix": "deps: ",
+  "commitMessageAction": "{{action}}",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": " to {{newVersion}}",
+  "prBodyTemplate": "This PR updates {{depName}} from {{currentVersion}} to {{newVersion}}.\n\n{{#if hasReleaseNotes}}\n### Release Notes\n{{{releaseNotes}}}\n{{/if}}\n\n{{#if isPin}}\n⚠️ This is a pin to a specific version.\n{{/if}}\n\n{{#if isMajor}}\n⚠️ This is a **major version update** - please review carefully.\n{{/if}}\n\n---\n*This PR was automatically created by Renovate*",
+  "prConcurrentLimit": 5,
+  "branchConcurrentLimit": 10
+}
