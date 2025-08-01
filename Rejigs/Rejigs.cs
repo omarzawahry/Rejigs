@@ -7,6 +7,7 @@ public partial class Rejigs
 {
     private readonly StringBuilder _pattern = new();
     private RegexOptions _options = RegexOptions.None;
+    private readonly object _lock = new object();
 
     /// <summary>
     /// Creates a new instance of the Rejigs regex builder.
@@ -15,7 +16,10 @@ public partial class Rejigs
 
     private Rejigs Append(string value)
     {
-        _pattern.Append(value);
-        return this;
+        lock (_lock)
+        {
+            _pattern.Append(value);
+            return this;
+        }
     }
 }
