@@ -79,4 +79,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please have a look at our [contributing guidelines](CONTRIBUTING.md).
+Contributions are welcome! Please feel free to raise an issue or a PR.
