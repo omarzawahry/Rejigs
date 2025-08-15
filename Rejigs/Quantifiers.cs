@@ -12,7 +12,7 @@ public partial class Rejigs
     ///     Appends a regex pattern that matches exactly the specified number of times.
     /// </summary>
     /// <param name="count">The exact number of times to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the count is negative.</exception>
     public Rejigs Exactly(int count)
     {
@@ -26,7 +26,7 @@ public partial class Rejigs
     ///     Appends a regex pattern that matches at least the specified number of times.
     /// </summary>
     /// <param name="count">The minimum number of times to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the count is negative.</exception>
     public Rejigs AtLeast(int count)
     {
@@ -42,7 +42,7 @@ public partial class Rejigs
     /// </summary>
     /// <param name="min">The minimum number of times to match.</param>
     /// <param name="max">The maximum number of times to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when the range is invalid.</exception>
     public Rejigs Between(int min, int max)
     {
@@ -56,7 +56,7 @@ public partial class Rejigs
     ///     pattern.
     /// </summary>
     /// <param name="pattern">The pattern to match zero or more times.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs ZeroOrMore(Func<Rejigs, Rejigs> pattern) => Group(pattern).ZeroOrMore();
 
     /// <summary>
@@ -64,21 +64,21 @@ public partial class Rejigs
     ///     pattern.
     /// </summary>
     /// <param name="pattern">The pattern to match one or more times.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs OneOrMore(Func<Rejigs, Rejigs> pattern) => Group(pattern).OneOrMore();
 
     /// <summary>
     /// Appends a regex pattern that matches the specified text zero or one time.
     /// </summary>
     /// <param name="text">The text to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Optional(string text) => Text(text).Optional();
 
     /// <summary>
     /// Appends a regex pattern that matches the specified pattern zero or one time.
     /// </summary>
     /// <param name="pattern">The pattern to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Optional(Func<Rejigs, Rejigs> pattern)
     {
         return Group(pattern).Optional();

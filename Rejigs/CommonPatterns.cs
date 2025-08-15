@@ -5,7 +5,7 @@ public partial class Rejigs
     /// <summary>
     /// Matches a valid email address pattern.
     /// </summary>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Email()
     {
         return AtStart()
@@ -20,7 +20,7 @@ public partial class Rejigs
     /// <summary>
     /// Matches a URL pattern (http/https).
     /// </summary>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Url()
     {
         return AtStart()
@@ -37,7 +37,7 @@ public partial class Rejigs
     /// <summary>
     /// Matches an IPv4 address pattern.
     /// </summary>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs IPv4()
     {
         var octet = Fragment()
@@ -60,7 +60,7 @@ public partial class Rejigs
     /// <summary>
     /// Matches a US phone number pattern (various formats).
     /// </summary>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs PhoneNumber()
     {
         return AtStart()
@@ -78,7 +78,7 @@ public partial class Rejigs
     /// <summary>
     /// Matches a credit card number pattern.
     /// </summary>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs CreditCard()
     {
         return AtStart()
@@ -95,7 +95,7 @@ public partial class Rejigs
     /// <summary>
     /// Matches a strong password pattern (at least 8 chars, uppercase, lowercase, digit, special char).
     /// </summary>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs StrongPassword()
     {
         return AtStart()
