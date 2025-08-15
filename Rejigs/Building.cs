@@ -7,7 +7,7 @@ public partial class Rejigs
     /// <summary>
     ///     Gets the constructed regex expression as a string.
     /// </summary>
-    public string Expression => _pattern.ToString();
+    public string Expression => _pattern;
 
     /// <summary>
     /// Creates a new instance of the Rejigs regex builder for creating reusable fragments.
@@ -18,43 +18,63 @@ public partial class Rejigs
     /// Uses a pre-built Rejigs fragment in the current pattern.
     /// </summary>
     /// <param name="fragment">The Rejigs fragment to include in the pattern.</param>
-    /// <returns>The current Rejigs instance for chaining.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Use(Rejigs fragment)
     {
-        _pattern.Append(fragment._pattern.ToString());
-        return this;
+        if (fragment == null) throw new ArgumentNullException(nameof(fragment));
+        return new Rejigs(_pattern + fragment._pattern, _options);
     }
     
     /// <summary>
     ///     Sets the regex options to ignore case when matching.
     /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance with updated options.</returns>
     public Rejigs IgnoreCase()
     {
-        _options |= RegexOptions.IgnoreCase;
-        return this;
+        return new Rejigs(_pattern, _options | RegexOptions.IgnoreCase);
     }
 
     /// <summary>
     ///     Sets the regex options to compile the regex for faster execution.
     /// </summary>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance with updated options.</returns>
     public Rejigs Compiled()
     {
-        _options |= RegexOptions.Compiled;
-        return this;
+        return new Rejigs(_pattern, _options | RegexOptions.Compiled);
     }
 
     /// <summary>
     ///     Builds a Regex object with the current expression and options set in the builder.
     /// </summary>
     /// <returns>A Regex object.</returns>
-    public Regex Build() => new(Expression, _options);
+    /// <exception cref="ArgumentException">Thrown when the regex pattern is invalid.</exception>
+    public Regex Build()
+    {
+        try
+        {
+            return new Regex(_pattern, _options);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException($"Invalid regex pattern '{_pattern}': {ex.Message}", ex);
+        }
+    }
 
     /// <summary>
     ///     Builds a Regex object with the current expression and specified options.
     /// </summary>
     /// <param name="options">The options to use when building the Regex.</param>
     /// <returns>A Regex object.</returns>
-    public Regex Build(RegexOptions options) => new(Expression, options);
+    /// <exception cref="ArgumentException">Thrown when the regex pattern is invalid.</exception>
+    public Regex Build(RegexOptions options)
+    {
+        try
+        {
+            return new Regex(_pattern, options);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException($"Invalid regex pattern '{_pattern}': {ex.Message}", ex);
+        }
+    }
 }

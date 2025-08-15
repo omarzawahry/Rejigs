@@ -6,18 +6,25 @@ public partial class Rejigs
     ///     Appends a non-capturing group to the regex pattern.
     /// </summary>
     /// <param name="pattern">The pattern to include in the non-capturing group.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Grouping(Func<Rejigs, Rejigs> pattern)
     {
-        Append("(?:");
-        pattern(new Rejigs())._pattern.ToString().Apply(p => Append(p));
-        return Append(")");
+        if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+        
+        var groupContent = pattern(new Rejigs());
+        return new Rejigs(_pattern + "(?:" + groupContent._pattern + ")", _options);
     }
     
-    private Rejigs Group(Func<Rejigs, Rejigs> pattern)
+    /// <summary>
+    ///     Appends a capturing group to the regex pattern.
+    /// </summary>
+    /// <param name="pattern">The pattern to include in the capturing group.</param>
+    /// <returns>A new Rejigs instance for chaining.</returns>
+    public Rejigs Group(Func<Rejigs, Rejigs> pattern)
     {
-        Append("(");
-        pattern(new Rejigs())._pattern.ToString().Apply(p => Append(p));
-        return Append(")");
+        if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+        
+        var groupContent = pattern(new Rejigs());
+        return new Rejigs(_pattern + "(" + groupContent._pattern + ")", _options);
     }
 }

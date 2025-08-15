@@ -18,7 +18,7 @@ public partial class Rejigs
             throw new RejigsValidationException(errorMessage ?? "Input cannot be null or empty");
         }
 
-        var regex = new Regex(_pattern.ToString(), _options);
+        var regex = new Regex(_pattern, _options);
         bool isValid = regex.IsMatch(input);
 
         if (!isValid)

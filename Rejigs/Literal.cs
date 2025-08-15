@@ -9,7 +9,7 @@ public partial class Rejigs
     ///     matches only the empty string.
     /// </summary>
     /// <param name="text">The exact text to match.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Text(string text) =>
         // Special-case: if text is empty, match only the empty string
         Append(text == string.Empty ? "^$" : Regex.Escape(text));
@@ -18,6 +18,6 @@ public partial class Rejigs
     ///     Appends a raw regex pattern fragment as-is.
     /// </summary>
     /// <param name="rawPattern">The raw regex pattern to append.</param>
-    /// <returns>The current Rejigs instance.</returns>
+    /// <returns>A new Rejigs instance for chaining.</returns>
     public Rejigs Pattern(string rawPattern) => Append(rawPattern);
 }
