@@ -9,7 +9,7 @@
     <PropertyGroup>
         <PackageId>Rejigs</PackageId>
         <Authors>omarzawahry</Authors>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <Description>A fluent interface for building regular expressions</Description>
         <PackageTags>regex;regular-expressions;fluent</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
