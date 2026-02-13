@@ -28,4 +28,24 @@ public partial class Rejigs
 
         return true;
     }
+
+    /// <summary>
+    /// Validates the input string against the built regex pattern without throwing an exception.
+    /// </summary>
+    /// <param name="input">The string to validate</param>
+    /// <returns>A RejigsValidationResult containing the validation outcome</returns>
+    public RejigsValidationResult TryValidate(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return new RejigsValidationResult(false, "Input cannot be null or empty");
+        }
+
+        var regex = new Regex(_pattern, _options);
+        bool isValid = regex.IsMatch(input);
+
+        return isValid
+            ? new RejigsValidationResult(true, null)
+            : new RejigsValidationResult(false, $"Input '{input}' does not match the required pattern");
+    }
 }
