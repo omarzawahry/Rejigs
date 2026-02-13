@@ -4,19 +4,19 @@
 
 # Rejigs
 
-🧩 **A fluent, intuitive, and thread-safe builder for regular expressions in C#**
+**A fluent, intuitive, and thread-safe builder for regular expressions in C#**
 
-Rejigs makes creating complex regular expressions simple and readable by providing a fluent API that builds patterns step by step. Built with immutability at its core, Rejigs is inherently thread-safe and follows functional programming principles. No more cryptic regex syntax - write patterns that are easy to understand, maintain, and safely use across multiple threads!
+Rejigs makes creating complex regular expressions simple and readable by providing a fluent API that builds patterns step by step. Built with immutability at its core, Rejigs is inherently thread-safe and follows functional programming principles. No more cryptic regex syntax — write patterns that are easy to understand, maintain, and safely use across multiple threads.
 
-## ✨ Key Features
+## Key Features
 
-- **🔧 Fluent API**: Build complex regex patterns with readable, chainable methods
-- **🛡️ Thread-Safe**: Immutable design ensures safe usage across multiple threads
-- **🔄 Immutable**: Each operation returns a new instance, preventing side effects
-- **⚡ Performance**: No locking overhead thanks to immutable architecture
-- **🧪 Well-Tested**: 369+ comprehensive tests ensuring reliability
+- **Fluent API** — Build complex regex patterns with readable, chainable methods
+- **Thread-Safe** — Immutable design ensures safe usage across multiple threads
+- **Immutable** — Each operation returns a new instance, preventing side effects
+- **Performant** — No locking overhead thanks to immutable architecture
+- **Well-Tested** — 370+ comprehensive tests ensuring reliability
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Installation
 
@@ -48,7 +48,7 @@ Console.WriteLine(regex.IsMatch("hello")); // True
 Console.WriteLine(regex.IsMatch("hello world")); // False
 ```
 
-## 📖 Real-World Example
+## Real-World Examples
 
 ### Email Validation
 
@@ -69,7 +69,37 @@ Console.WriteLine(emailRegex.IsMatch("user@example.com")); // True
 Console.WriteLine(emailRegex.IsMatch("invalid-email")); // False
 ```
 
-## 🛡️ Thread Safety & Immutability
+## Validation
+
+Rejigs provides built-in validation methods to check input strings against patterns.
+
+### Validate (throws on failure)
+
+```csharp
+var pattern = Rejigs.Create().AtStart().OneOrMore(r => r.AnyDigit()).AtEnd();
+
+pattern.Validate("12345"); // Returns true
+
+pattern.Validate("abc");   // Throws RejigsValidationException
+```
+
+### TryValidate (returns a result object)
+
+For scenarios where you prefer not to use exceptions for control flow, use `TryValidate`. It returns a `RejigsValidationResult` with `IsValid` and `ErrorMessage` properties:
+
+```csharp
+var pattern = Rejigs.Create().AtStart().OneOrMore(r => r.AnyDigit()).AtEnd();
+
+var result = pattern.TryValidate("12345");
+Console.WriteLine(result.IsValid);      // True
+Console.WriteLine(result.ErrorMessage); // null
+
+var failed = pattern.TryValidate("abc");
+Console.WriteLine(failed.IsValid);      // False
+Console.WriteLine(failed.ErrorMessage); // "Input 'abc' does not match the required pattern"
+```
+
+## Thread Safety & Immutability
 
 Rejigs is built with **immutability** at its core, making it inherently **thread-safe** without any performance overhead from locking mechanisms.
 
@@ -108,22 +138,22 @@ var idPattern = sharedBuilder.AtEnd().Build();
 
 ### Performance Benefits
 
-- **No locking overhead**: Unlike mutable builders, no synchronization primitives needed
-- **Predictable performance**: Operations are always O(1) for state creation
-- **Memory efficient**: Only creates new instances when needed
-- **Garbage collector friendly**: Short-lived intermediate objects
+- **No locking overhead** — Unlike mutable builders, no synchronization primitives needed
+- **Predictable performance** — Operations are always O(1) for state creation
+- **Memory efficient** — Only creates new instances when needed
+- **Garbage collector friendly** — Short-lived intermediate objects
 
-## 🎯 Tips and Best Practices
+## Tips and Best Practices
 
-1. **Use descriptive variable names**: `var emailRegex = ...` instead of `var regex = ...`
-2. **Break complex patterns into smaller parts**: Use variables to store intermediate builders
-3. **Add comments**: Explain what each part of your regex does
-4. **Test thoroughly**: Use unit tests to verify your patterns work correctly
-5. **Use `AtStart()` and `AtEnd()`**: For exact matches, always anchor your patterns
-6. **Leverage immutability**: Store base patterns and derive variations safely
-7. **Thread-safe by design**: Feel free to share builders across threads without locks
-8. **Cache compiled regexes**: Store the final `Build()` result for repeated use
-9. **Functional composition**: Chain operations naturally without side effects
+1. **Use descriptive variable names** — `var emailRegex = ...` instead of `var regex = ...`
+2. **Break complex patterns into smaller parts** — Use variables to store intermediate builders
+3. **Add comments** — Explain what each part of your regex does
+4. **Test thoroughly** — Use unit tests to verify your patterns work correctly
+5. **Use `AtStart()` and `AtEnd()`** — For exact matches, always anchor your patterns
+6. **Leverage immutability** — Store base patterns and derive variations safely
+7. **Thread-safe by design** — Share builders across threads without locks
+8. **Cache compiled regexes** — Store the final `Build()` result for repeated use
+9. **Prefer `TryValidate` over `Validate`** — Use the non-throwing variant when validation failure is expected
 
 ### Multi-Threading Example
 
@@ -144,14 +174,14 @@ Task.Run(() => {
 // No synchronization needed!
 ```
 
-## 📚 Documentation
+## Documentation
 
 For detailed documentation, examples, and API reference, visit the [Rejigs Documentation](https://github.com/omarzawahry/Rejigs/wiki).
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to raise an issue or a PR.

@@ -312,4 +312,82 @@ public class ValidationTests
         var exception = Assert.Throws<RejigsValidationException>(() => rejigs.Validate(longInput));
         Assert.That(exception.Message, Contains.Substring("does not match the required pattern"));
     }
+
+    // TryValidate Tests
+
+    [TestCase(null)]
+    [TestCase("")]
+    public void TryValidate_NullOrEmptyInput_ReturnsFailureResult(string? input)
+    {
+        var rejigs = Rejigs.Create().Text("hello");
+
+        var result = rejigs.TryValidate(input!);
+
+        Assert.That(result.IsValid, Is.False);
+        Assert.That(result.ErrorMessage, Is.EqualTo("Input cannot be null or empty"));
+    }
+
+    [Test]
+    public void TryValidate_ValidInput_ReturnsSuccessResult()
+    {
+        var rejigs = Rejigs.Create().Text("hello");
+
+        var result = rejigs.TryValidate("hello");
+
+        Assert.That(result.IsValid, Is.True);
+        Assert.That(result.ErrorMessage, Is.Null);
+    }
+
+    [Test]
+    public void TryValidate_InvalidInput_ReturnsFailureResult()
+    {
+        var rejigs = Rejigs.Create().Text("hello");
+
+        var result = rejigs.TryValidate("world");
+
+        Assert.That(result.IsValid, Is.False);
+        Assert.That(result.ErrorMessage, Is.EqualTo("Input 'world' does not match the required pattern"));
+    }
+
+    [Test]
+    public void TryValidate_ComplexPattern_ValidInput_ReturnsSuccess()
+    {
+        var rejigs = Rejigs.Create()
+                           .AtStart()
+                           .OneOrMore(r => r.AnyLetterOrDigit())
+                           .Text("@")
+                           .OneOrMore(r => r.AnyLetterOrDigit())
+                           .AtEnd();
+
+        var result = rejigs.TryValidate("user@example");
+
+        Assert.That(result.IsValid, Is.True);
+        Assert.That(result.ErrorMessage, Is.Null);
+    }
+
+    [Test]
+    public void TryValidate_ComplexPattern_InvalidInput_ReturnsFailure()
+    {
+        var rejigs = Rejigs.Create()
+            .AtStart()
+            .OneOrMore(r => r.AnyLetterOrDigit())
+            .Text("@")
+            .OneOrMore(r => r.AnyLetterOrDigit())
+            .AtEnd();
+
+        var result = rejigs.TryValidate("invalid-email");
+
+        Assert.That(result.IsValid, Is.False);
+        Assert.That(result.ErrorMessage, Does.Contain("does not match"));
+    }
+
+    [Test]
+    public void TryValidate_DoesNotThrowException()
+    {
+        var rejigs = Rejigs.Create().Text("hello");
+
+        Assert.DoesNotThrow(() => rejigs.TryValidate("world"));
+        Assert.DoesNotThrow(() => rejigs.TryValidate(null!));
+        Assert.DoesNotThrow(() => rejigs.TryValidate(""));
+    }
 }
